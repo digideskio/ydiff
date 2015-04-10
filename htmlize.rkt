@@ -163,17 +163,17 @@
         (loop (sub1 i) start end)]))))
 
 
-
+;; modified by @keyanzhang
 (define html-header
   (lambda (port)
       (line port "<html>")
       (line port "<head>")
       (line port "<META http-equiv=\"Content-Type\""
                       " content=\"text/html; charset=utf-8\">")
-      (line port "<LINK href=\"diff.css\""
+      (line port "<LINK href=\"/Users/k/Dropbox/dev-cloud/lisp/ydiff/diff-lisp-workspace/diff.css\""
                       " rel=\"stylesheet\" type=\"text/css\">")
       (line port "<script type=\"text/javascript\""
-                        " src=\"nav.js\"></script>")
+                        " src=\"/Users/k/Dropbox/dev-cloud/lisp/ydiff/diff-lisp-workspace/nav.js\"></script>")
       (line port "</head>")
       (line port "<body>")))
 

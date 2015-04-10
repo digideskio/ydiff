@@ -32,7 +32,7 @@
 
 (define *defs*
   '(define defun defvar define-syntax define-minor-mode
-    defmacro defn))
+     defmacro defn))
 
 
 (define get-keyword
@@ -52,26 +52,26 @@
 ;; Try to get the keyword of the sexp if it is not token, comment, str
 ;; and char.
 (set-get-type
-  (lambda (node)
-    (cond
-     [(token? node) 'token]
-     [(comment? node) 'comment]
-     [(str? node) 'str]
-     [(character? node) 'char]
-     [else
-      (get-keyword node)])))
+ (lambda (node)
+   (cond
+    [(token? node) 'token]
+    [(comment? node) 'comment]
+    [(str? node) 'str]
+    [(character? node) 'char]
+    [else
+     (get-keyword node)])))
 
 
 (set-get-name
-  (lambda (node)
-    (let ([key (get-keyword node)])
-      (cond
-       [(and key
-             (memq key *defs*)
-             (pair? (Node-elts node))
-             (not (null? (cdr (Node-elts node)))))
-        (get-symbol (cadr (Node-elts node)))]
-       [else #f]))))
+ (lambda (node)
+   (let ([key (get-keyword node)])
+     (cond
+      [(and key
+            (memq key *defs*)
+            (pair? (Node-elts node))
+            (not (null? (cdr (Node-elts node)))))
+       (get-symbol (cadr (Node-elts node)))]
+      [else #f]))))
 
 
 ;; function interface
@@ -88,7 +88,14 @@
 
 
 ;; command line interface
-(let* ([args (current-command-line-arguments)]
-       [file1 (vector-ref args 0)]
-       [file2 (vector-ref args 1)])
-  (diff-lisp file1 file2))
+;; modified by @keyanzhang
+(let ([args (current-command-line-arguments)])
+  (if (zero? (vector-length args))
+      (printf "Usage: \n  diff-lisp file1 file2 \t\tgenerate diff between file1 and file2\n")
+      (let* ([file1 (vector-ref args 0)]
+             [file2 (vector-ref args 1)]
+             [target-path (path->string (simplify-path (path-only (path->complete-path (find-system-path 'exec-file)))))])
+        (diff-lisp file1 file2)
+        (printf "\nGenerated diff: \n    ~a\n"
+                (string-append "file://" target-path (base-name file1) "-"
+                               (base-name file2) ".html")))))
